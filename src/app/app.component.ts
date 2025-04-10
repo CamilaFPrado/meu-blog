@@ -1,12 +1,29 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { PostComponent } from "./post/post.component";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css'],
+  imports: [PostComponent]
 })
 export class AppComponent {
-  title = 'meu-blog';
+  // Inicializando o objeto newPost
+  newPost = {
+    titulo: '',
+    conteudo: '',
+    autor: '',
+    data: ''
+  };
+
+  // Array de posts
+  posts: any[] = [];
+
+  // Função para adicionar um post
+  addPost() {
+    if (this.newPost.titulo && this.newPost.conteudo && this.newPost.autor && this.newPost.data) {
+      this.posts.push({ ...this.newPost });
+      this.newPost = { titulo: '', conteudo: '', autor: '', data: '' }; // Limpa o formulário
+    }
+  }
 }

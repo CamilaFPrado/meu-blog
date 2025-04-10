@@ -1,0 +1,13 @@
+<div class="post">
+  <h2>{{ titulo }}</h2>
+  <p><strong>Autor:</strong> {{ autor }}</p>
+  <p><strong>Data:</strong> {{ data }}</p>
+  <p>{{ conteudo }}</p>
+</div>
+<div class="post">
+  <h2>{{ post?.title }}</h2>
+  <small>Autor: Você | Data: {{ post?.date || 'Data não definida' }}</small>
+  <p>{{ post.content }}</p>
+  <button (click)="likePost()">Curtir</button>
+  <span>{{ likes }} curtidas</span>
+</div>
