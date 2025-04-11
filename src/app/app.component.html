@@ -1,28 +1,85 @@
-<h1>Meu Blog 🚀</h1>
+<mat-toolbar color="primary">
+  <span style="font-weight: bold; font-size: 1.2rem;">📝 Meu Blog</span>
+</mat-toolbar>
 
-<post
-  *ngFor="let post of posts"
-  [titulo]="post.titulo"
-  [conteudo]="post.conteudo"
-  [autor]="post.autor"
-  [data]="post.data">
-</post>
+<div style="max-width: 800px; margin: 2rem auto; padding: 0 1rem;">
+  <!-- Filtro por status -->
+  <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 1rem;">
+    <mat-label>Filtrar por status</mat-label>
+    <mat-select [(ngModel)]="filtroStatus">
+      <mat-option value="todos">Todos</mat-option>
+      <mat-option value="pendente">Pendentes</mat-option>
+      <mat-option value="feito">Feitos</mat-option>
+    </mat-select>
+  </mat-form-field>
 
-<div class="add-post-form">
-  <h2>Adicionar Novo Post</h2>
-  <form (submit)="addPost()">
-    <label for="titulo">Título</label>
-    <input type="text" id="titulo" [(ngModel)]="newPost.titulo" name="titulo" required />
+  <!-- Formulário dentro de um card -->
+  <mat-card>
+    <mat-card-title>
+      {{ editandoIndex === null ? 'Novo Post' : 'Editar Post' }}
+    </mat-card-title>
+    <mat-card-content>
+      <form (ngSubmit)="addPost()" class="form-box">
+        <mat-form-field appearance="fill" style="width: 100%;">
+          <mat-label>Título</mat-label>
+          <input matInput [(ngModel)]="newPost.titulo" name="titulo" required>
+        </mat-form-field>
 
-    <label for="conteudo">Conteúdo</label>
-    <textarea id="conteudo" [(ngModel)]="newPost.conteudo" name="conteudo" required></textarea>
+        <mat-form-field appearance="fill" style="width: 100%;">
+          <mat-label>Conteúdo</mat-label>
+          <textarea matInput rows="4" [(ngModel)]="newPost.conteudo" name="conteudo" required></textarea>
+        </mat-form-field>
 
-    <label for="autor">Autor</label>
-    <input type="text" id="autor" [(ngModel)]="newPost.autor" name="autor" required />
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+          <mat-form-field appearance="fill" style="flex: 1;">
+            <mat-label>Autor</mat-label>
+            <input matInput [(ngModel)]="newPost.autor" name="autor" required>
+          </mat-form-field>
 
-    <label for="data">Data</label>
-    <input type="date" id="data" [(ngModel)]="newPost.data" name="data" required />
+          <mat-form-field appearance="fill" style="flex: 1;">
+            <mat-label>Data</mat-label>
+            <input matInput type="date" [(ngModel)]="newPost.data" name="data" required>
+          </mat-form-field>
+        </div>
 
-    <button type="submit">Adicionar Post</button>
-  </form>
+        <div style="margin-top: 1rem;">
+          <button mat-raised-button color="primary" type="submit">
+            {{ editandoIndex === null ? 'Adicionar' : 'Salvar' }}
+          </button>
+          <button *ngIf="editandoIndex !== null" mat-button type="button" (click)="cancelarEdicao()">Cancelar</button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Lista de posts -->
+  <mat-card *ngFor="let post of postsFiltrados; let i = index" style="margin-top: 1.5rem;">
+    <mat-card-header>
+      <mat-card-title>{{ post.titulo }}</mat-card-title>
+      <mat-card-subtitle>
+        {{ post.autor }} - {{ post.data | date }}
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <p>{{ post.conteudo }}</p>
+
+      <!-- Status com chip -->
+        <mat-chip [color]="post.status === 'feito' ? 'primary' : 'warn'" selected>
+          {{ post.status | titlecase }}
+        </mat-chip>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button mat-icon-button color="primary" (click)="alterarStatus(post)" matTooltip="Alterar status">
+        <mat-icon>{{ post.status === 'pendente' ? 'check_circle' : 'undo' }}</mat-icon>
+      </button>
+      <button mat-icon-button color="accent" (click)="editarPost(i)" matTooltip="Editar">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button color="warn" (click)="removerPost(i)" matTooltip="Excluir">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </mat-card-actions>
+  </mat-card>
 </div>
